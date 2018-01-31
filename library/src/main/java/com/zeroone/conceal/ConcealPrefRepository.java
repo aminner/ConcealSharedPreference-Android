@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringRes;
 
+import com.facebook.crypto.Conceal;
 import com.facebook.soloader.SoLoader;
 import com.google.gson.Gson;
 import com.zeroone.conceal.model.Constant;
@@ -53,9 +54,6 @@ public class ConcealPrefRepository<T> extends BaseRepository {
         boolean mEnabledCrypto = builder.isEnabledCrypto();
         boolean mEnableCryptKey = builder.isEnableCryptKey();
         String mEntityPasswordRaw = builder.getEntityPasswordRaw();
-
-        //init editor
-        editor = sharedPreferences.edit();
 
         //init crypto
         concealCrypto = new ConcealCrypto.CryptoBuilder(mContext)
@@ -129,8 +127,9 @@ public class ConcealPrefRepository<T> extends BaseRepository {
         editor.apply();
     }
 
-    public void remove(@NonNull String key) {
-        editor.remove(hashKey(key)).apply();
+    public ConcealPrefRepository remove(@NonNull String key) {
+        editor.remove(hashKey(key));
+        return this;
     }
 
     /**
@@ -220,64 +219,76 @@ public class ConcealPrefRepository<T> extends BaseRepository {
 
     /* Save Data */
 
-    public void putString(@NonNull String key, String value) {
-        editor.putString(hashKey(key), hideValue(value)).apply();
+    public ConcealPrefRepository putString(@NonNull String key, String value) {
+        editor.putString(hashKey(key), hideValue(value));
+        return this;
+    }
+    public ConcealPrefRepository edit()
+    {
+        editor = sharedPreferences.edit();
+        return this;
+    }
+    public void apply()
+    {
+        editor.apply();
+        editor = null;
     }
 
-    public void putString(@NonNull String key, @StringRes int value) {
-        putString(key, mContext.getResources().getString(value));
+    public ConcealPrefRepository  putString(@NonNull String key, @StringRes int value) {
+        return putString(key, mContext.getResources().getString(value));
     }
 
-    public void putInt(@NonNull String key, int value) {
-        putString(key, Integer.toString(value));
+    public ConcealPrefRepository putInt(@NonNull String key, int value) {
+        return putString(key, Integer.toString(value));
     }
 
-    public void putLong(@NonNull String key, long value) {
-        putString(key, Long.toString(value));
+    public ConcealPrefRepository putLong(@NonNull String key, long value) {
+
+        return putString(key, Long.toString(value));
     }
 
-    public void putDouble(@NonNull String key, double value) {
-        putString(key, Double.toString(value));
+    public ConcealPrefRepository putDouble(@NonNull String key, double value) {
+        return putString(key, Double.toString(value));
     }
 
-    public void putFloat(@NonNull String key, float value) {
-        putString(key, Float.toString(value));
+    public ConcealPrefRepository putFloat(@NonNull String key, float value) {
+        return putString(key, Float.toString(value));
     }
 
-    public void putBoolean(@NonNull String key, boolean value) {
-        putString(key, Boolean.toString(value));
+    public ConcealPrefRepository putBoolean(@NonNull String key, boolean value) {
+        return putString(key, Boolean.toString(value));
     }
 
-    public void putListString(@NonNull String key, List<String> value){
-        putString(key, value.toString());
+    public ConcealPrefRepository putListString(@NonNull String key, List<String> value){
+        return putString(key, value.toString());
     }
 
-    public void putListFloat(@NonNull String key, List<Float> value){
-        putString(key,value.toString());
+    public ConcealPrefRepository putListFloat(@NonNull String key, List<Float> value){
+        return putString(key,value.toString());
     }
 
-    public void putListInteger(@NonNull String key, List<Integer> value){
-        putString(key,value.toString());
+    public ConcealPrefRepository putListInteger(@NonNull String key, List<Integer> value){
+        return putString(key,value.toString());
     }
 
-    public void putListDouble(@NonNull String key, List<Double> value){
-        putString(key,value.toString());
+    public ConcealPrefRepository putListDouble(@NonNull String key, List<Double> value){
+        return putString(key,value.toString());
     }
 
-    public void putListLong(@NonNull String key, List<Long> value){
-        putString(key,value.toString());
+    public ConcealPrefRepository putListLong(@NonNull String key, List<Long> value){
+        return putString(key,value.toString());
     }
 
-    public void putListBoolean(@NonNull String key, List<Boolean> value){
-        putString(key,value.toString());
+    public ConcealPrefRepository putListBoolean(@NonNull String key, List<Boolean> value){
+        return putString(key,value.toString());
     }
 
-    public void putMap(@NonNull String key,Map<String,String> values){
-        putString(key,ConverterListUtils.convertMapToString(values));
+    public ConcealPrefRepository putMap(@NonNull String key,Map<String,String> values){
+        return putString(key,ConverterListUtils.convertMapToString(values));
     }
 
-    public void putByte(@NonNull String key,byte[] bytes){
-        putString(key,new String(bytes));
+    public ConcealPrefRepository putByte(@NonNull String key,byte[] bytes){
+        return putString(key,new String(bytes));
     }
 
     @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
@@ -342,8 +353,8 @@ public class ConcealPrefRepository<T> extends BaseRepository {
         return null;
     }
 
-    public void putModel(@NonNull String key, Object object) {
-        putString(key, new Gson().toJson(object));
+    public ConcealPrefRepository putModel(@NonNull String key, Object object) {
+        return putString(key, new Gson().toJson(object));
     }
 
 
